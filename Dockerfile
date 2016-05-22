@@ -5,9 +5,12 @@ RUN apt-get update && \
     apt-get install -y libgtk2.0-0 libxtst6 libgconf-2-4 libnss3 libasound2
 
 RUN npm install -g electron-prebuilt
+RUN npm install -g nativefier
 
-COPY package.json /tmp
-COPY main.js /tmp
+#COPY package.json /tmp
+#COPY main.js /tmp
+
+RUN nativefier "https://www.flowdock.com"
 
 ENTRYPOINT ["/usr/local/bin/electron", "/tmp"]
 
