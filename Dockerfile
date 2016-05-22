@@ -9,6 +9,8 @@ RUN npm install -g electron-prebuilt
 COPY package.json /tmp
 COPY main.js /tmp
 
+
 ENTRYPOINT ["/usr/local/bin/electron", "/tmp"]
+
 
 # Add --security-opt seccomp:unconfined to docker run to supress the udev error
