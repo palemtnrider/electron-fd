@@ -20,7 +20,7 @@ function createWindow() {
   win.loadURL(`https://www.flowdock.com`);
 
   // Open the DevTools.
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {
