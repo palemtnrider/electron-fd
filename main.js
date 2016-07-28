@@ -4,9 +4,8 @@
 
 const electron = require('electron');
 // Module to control application life.
-const {app} = electron;
+const {app, shell, BrowserWindow} = electron;
 // Module to create native browser window.
-const {BrowserWindow} = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -14,10 +13,10 @@ let win;
 
 function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600, webPreferences:{nodeIntegration:false}, title:"Flowdock"});
+  win = new BrowserWindow({width: 1280, height: 700, title:"Flowdock"});
 
   // and load the index.html of the app.
-  win.loadURL(`https://www.flowdock.com`);
+  win.loadURL('file://' + __dirname + `/index.html`);
 
   // Open the DevTools.
   //win.webContents.openDevTools();
@@ -29,13 +28,8 @@ function createWindow() {
     // when you should delete the corresponding element.
     win = null;
   });
-  win.webContents.on('new-window', function(event, url){
-    event.preventDefault();
-    open(url);
-});
-
 }
-
+app.setName('flowdock-app');
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
