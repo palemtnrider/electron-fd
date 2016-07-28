@@ -7,10 +7,10 @@ onload = () => {
 
   webview.addEventListener('new-window', (e) => {
     console.log('new-window', e)
-    e.preventDefault()
-    e.stopPropagation()
+    
     const shell = require('electron').shell
-    if (e.disposition === 'foreground-tab') {
+    if (e.disposition === 'new-window') {
+      e.preventDefault()
       shell.openExternal(e.url)
     }
   })

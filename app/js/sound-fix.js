@@ -6,35 +6,37 @@
 // @grant       none
 // ==/UserScript==
 onload = () => {
-  window.setTimeout(function () {
-    (function (win) {
-        window.console.log('fuck flowdock');
-        var orig = win.Howl.prototype.play;
-        win.Howl.prototype.play = function () {
-            var self = this;
-            return win.Howler.ctx.resume().then(function () {
-                window.console.log('fuck flowdock play');
-                return orig.apply(self, arguments);
-            }).then(teimout(3000))
-            .then(() => {
-                return windows.setTimeout(() => {
-                    return win.Howler.ctx.suspend();
-                })
-            });
-        };
-        win.Howler.ctx.suspend();
-    })(window);
-  }, 1000);
-}
+  const timeout = time => {
+    return () => {
+      var promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve()
+        }, time)
+      })
 
-const timeout = time => {
-  return () => {
-    var promise = new Promise()
-
-    window.setTimeout(() => {
-        promise.resolve()
-    }, time)
-
-    return promise
+      return promise
+    }
   }
+
+  timeout(1000)()
+  .then(() => {
+    (function (win) {
+      console.log('fuck flowdock');
+      var orig = win.Howl.prototype.play;
+      win.Howl.prototype.play = () => {
+        var self = this;
+        return win.Howler.ctx.resume().then(() => {
+          console.log('fuck flowdock play');
+            return orig.apply(self, arguments);
+        }).then(timeout(3000))
+        .then(() => {
+            return windows.setTimeout(() => {
+              return win.Howler.ctx.suspend();
+          })
+        });
+      };
+
+      win.Howler.ctx.suspend()
+    })(window);
+  });
 }
