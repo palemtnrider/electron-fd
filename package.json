@@ -10,5 +10,9 @@
   },
   "dependencies": {
     "simple-spellchecker": "^0.9.0"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/electron main.js",
+    "build": "./node_modules/.bin/electron-packager . --out=dist --prune --asar --overwrite --platform=win32 --arch=x64"
   }
 }
