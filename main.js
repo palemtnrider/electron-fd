@@ -6,7 +6,7 @@ const electron = require('electron')
 const path = require('path')
 const SpellChecker = require('simple-spellchecker')
 // Module to control application life.
-const {app, shell, BrowserWindow, ipcMain, nativeImage} = electron
+const {app, BrowserWindow, ipcMain} = electron
 // Module to create native browser window.
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -19,7 +19,7 @@ const spellDict = path.join(__dirname, 'node_modules/simple-spellchecker/dict')
 const APP_ICON = path.join(__dirname, 'app/resources', 'icon')
 
 const iconPath = () => {
-	return APP_ICON + (process.platform === 'win32' ? '.ico' : '.png')
+  return APP_ICON + (process.platform === 'win32' ? '.ico' : '.png')
 }
 
 // Single instance
@@ -42,7 +42,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1280,
     height: 700,
-    title: "Flowdock",
+    title: 'Flowdock',
     icon: iconPath(),
     webPreferences: {
       preload: path.join(__dirname, 'app/js/preload.js'),
@@ -54,18 +54,18 @@ function createWindow() {
   // and load the index.html of the app.
   win.loadURL(`https://www.flowdock.com/app`)
   const page = win.webContents
-  
+
   // Open the DevTools.
   // page.openDevTools()
 
   // Add spellcheck dictionary
   SpellChecker.getDictionary('en-GB', spellDict, (err, result) => {
-		if (!err) {
-			myDictionary = result
-		}
-	})
+    if (!err) {
+      myDictionary = result
+    }
+  })
 
-	// Define function for consult the dictionary.
+// Define function for consult the dictionary.
   ipcMain.on('checkspell', (event, word) => {
 //    console.log('on checkspell', event, word)
     if (myDictionary !== null && word !== null) {
@@ -81,7 +81,7 @@ function createWindow() {
     win = null
   })
 
-  // open links in new window  
+  // open links in new window
   page.on('new-window', (event, url, fileName, disposition, options) => {
     if (win.useDefaultWindowBehaviour) {
       win.useDefaultWindowBehaviour = false

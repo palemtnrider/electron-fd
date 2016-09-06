@@ -23,34 +23,36 @@ onload = () => {
 
   let currentPlay = 0
   const fixPlay = (win) => {
-      console.log('fuck flowdock for not using the latest')
-      let orig = win.Howl.prototype.play
-      let suspendPromise = win.Howler.ctx.suspend()
+    console.log('fuck flowdock for not using the latest')
+    let orig = win.Howl.prototype.play
+    let suspendPromise = win.Howler.ctx.suspend()
 
-      win.Howl.prototype.play = function() {
-        let self = this
-        let args = arguments
-        currentPlay++        
-        return suspendPromise.then(() => {
-          if (currentPlay === 1)
-            return win.Howler.ctx.resume()
-        })
-        .then(() => {
-          console.log('fuck flowdock play:', currentPlay)
-          return orig.apply(self, arguments)
-        })
-        .then(() => {
-          return onEnd(self)
-        })
-        .then(timeout(4000)) //yes this shit because one the event fired as first finishes play
-        .then(() => {
-          currentPlay--
-          console.log('fuck flowdock play end:', currentPlay)
-          if (currentPlay === 0) {  
-            suspendPromise = win.Howler.ctx.suspend()
-          }
-        })
-      }
+    win.Howl.prototype.play = () => {
+      let self = this
+
+      currentPlay++
+
+      return suspendPromise.then(() => {
+        if (currentPlay === 1) {
+          return win.Howler.ctx.resume()
+        }
+      })
+      .then(() => {
+        console.log('fuck flowdock play:', currentPlay)
+        return orig.apply(self, arguments)
+      })
+      .then(() => {
+        return onEnd(self)
+      })
+      .then(timeout(4000)) // yes this shit because one the event fired as first finishes play
+      .then(() => {
+        currentPlay--
+        console.log('fuck flowdock play end:', currentPlay)
+        if (currentPlay === 0) {
+          suspendPromise = win.Howler.ctx.suspend()
+        }
+      })
+    }
   }
 
   // wait the page to finish initialize
@@ -65,12 +67,12 @@ onload = () => {
 const {webFrame, ipcRenderer, remote} = require('electron')
 const {nativeImage, app} = remote
 
-webFrame.setSpellCheckProvider("en-GB", false, {
-  spellCheck: function (text) {    
+webFrame.setSpellCheckProvider('en-GB', false, {
+  spellCheck: function (text) {
     console.log(text)
-        var res = ipcRenderer.sendSync('checkspell', text)
-        return res != null? res : true
-    }
+    const res = ipcRenderer.sendSync('checkspell', text)
+    return res !== null ? res : true
+  }
 })
 
 // unread Badges
