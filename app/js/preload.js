@@ -41,7 +41,7 @@ onload = () => {
 
       return stateChangePromise.then(() => {
         if (ctx.state === 'suspended') {
-          stateChangePromise = ctx.resume().then(timeout(100))
+          stateChangePromise = ctx.resume().then(timeout(50))
           return stateChangePromise
         }
         if (ctx.state === 'closed') {
@@ -61,7 +61,7 @@ onload = () => {
         currentPlay--
         console.log('fuck flowdock play end:', currentPlay)
         if (currentPlay === 0 && ctx.state === 'running') {
-          stateChangePromise = ctx.suspend().then(timeout(100))
+          stateChangePromise = ctx.suspend().then(timeout(50))
         }
       })
     }
