@@ -31,22 +31,27 @@ onload = () => {
 
     console.log('fuck flowdock for not using the latest')
     let orig = win.Howl.prototype.play
-    let suspendPromise = win.Howler.ctx.suspend()
-    let resumePromise
+    let stateChangePromise = win.Howler.ctx.suspend()
 
-    win.Howl.prototype.play = () => {
+    win.Howl.prototype.play = function () {
       let self = this
+      let args = arguments
       currentPlay++
+      let ctx = win.Howler.ctx;
 
-      return Promise.all([suspendPromise, resumePromise]).then(() => {
-        if (currentPlay === 1) {
-          resumePromise = win.Howler.ctx.resume()
-          return resumePromise
+      return stateChangePromise.then(() => {
+        if (ctx.state === 'suspended') {
+          stateChangePromise = ctx.resume().then(timeout(100))
+          return stateChangePromise
         }
+        if (ctx.state === 'closed') {
+          return Promise.reject('audio context is closed')
+        }
+        return stateChangePromise
       })
       .then(() => {
         console.log('fuck flowdock play:', currentPlay)
-        return orig.apply(self, arguments)
+        return orig.apply(self, args)
       })
       .then(() => {
         return onEnd(self)
@@ -55,8 +60,8 @@ onload = () => {
       .then(() => {
         currentPlay--
         console.log('fuck flowdock play end:', currentPlay)
-        if (currentPlay === 0) {
-          suspendPromise = win.Howler.ctx.suspend()
+        if (currentPlay === 0 && ctx.state === 'running') {
+          stateChangePromise = ctx.suspend().then(timeout(100))
         }
       })
     }
