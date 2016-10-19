@@ -23,18 +23,25 @@ onload = () => {
 
   let currentPlay = 0
   const fixPlay = (win) => {
+    if (win.Howl === undefined) {
+      console.log('no Howl library yet!')
+      timeout(10000).then(() => fixPlay(win))
+      return
+    }
+
     console.log('fuck flowdock for not using the latest')
     let orig = win.Howl.prototype.play
     let suspendPromise = win.Howler.ctx.suspend()
+    let resumePromise
 
     win.Howl.prototype.play = () => {
       let self = this
-
       currentPlay++
 
-      return suspendPromise.then(() => {
+      return Promise.all([suspendPromise, resumePromise]).then(() => {
         if (currentPlay === 1) {
-          return win.Howler.ctx.resume()
+          resumePromise = win.Howler.ctx.resume()
+          return resumePromise
         }
       })
       .then(() => {
@@ -44,7 +51,7 @@ onload = () => {
       .then(() => {
         return onEnd(self)
       })
-      .then(timeout(4000)) // yes this shit because one the event fired as first finishes play
+      .then(timeout(2000)) // yes this shit because one the event fired as first finishes play
       .then(() => {
         currentPlay--
         console.log('fuck flowdock play end:', currentPlay)
