@@ -7,6 +7,8 @@ const path = require('path')
 const SpellChecker = require('simple-spellchecker')
 // Module to control application life.
 const {app, BrowserWindow, ipcMain} = electron
+const contextMenu = require('electron-context-menu')
+
 // Module to create native browser window.
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -32,6 +34,9 @@ const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
     win.focus()
   }
 })
+
+// init context menu
+contextMenu({})
 
 if (shouldQuit) {
   app.quit()
