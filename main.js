@@ -1,12 +1,10 @@
 //
 // Copied from electron quick start
 //
-
-const electron = require('electron')
+const {app, BrowserWindow, ipcMain, shell} = require('electron')
 const path = require('path')
 const SpellChecker = require('simple-spellchecker')
 // Module to control application life.
-const {app, BrowserWindow, ipcMain} = electron
 const contextMenu = require('electron-context-menu')
 
 // Module to create native browser window.
@@ -95,7 +93,7 @@ function createWindow() {
     event.preventDefault()
     // console.log('Open url', url, disposition)
     if (disposition === 'new-window') {
-      electron.shell.openExternal(url)
+      shell.openExternal(url)
     }
   })
 

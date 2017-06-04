@@ -4,7 +4,7 @@
   "version": "0.1.1",
   "main": "main.js",
   "devDependencies": {
-    "electron-packager": "^7.7.0",
+    "electron-packager": "^8.4.0",
     "eslint": "^3.4.0",
     "eslint-config-google": "^0.6.0",
     "eslint-config-standard": "^6.0.0",
@@ -12,9 +12,10 @@
     "eslint-plugin-standard": "^2.0.0"
   },
   "dependencies": {
-    "electron": "^1.4.3",
-    "electron-context-menu": "^0.6.0",
-    "simple-spellchecker": "^0.9.0"
+    "damerau-levenshtein": "^1.0.4",
+    "electron": "^1.4.12",
+    "electron-context-menu": "^0.8.0",
+    "simple-spellchecker": "^0.9.4"
   },
   "scripts": {
     "start": "./node_modules/.bin/electron main.js",

@@ -25,7 +25,7 @@ onload = () => {
   const fixPlay = (win) => {
     if (win.Howl === undefined) {
       console.log('no Howl library yet!')
-      timeout(10000).then(() => fixPlay(win))
+      timeout(10000)().then(() => fixPlay(win))
       return
     }
 
