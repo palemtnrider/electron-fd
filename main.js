@@ -1,21 +1,19 @@
 //
 // Copied from electron quick start
 //
-const {app, BrowserWindow, ipcMain, shell} = require('electron')
+const {app, BrowserWindow, shell, Menu} = require('electron')
 const path = require('path')
-const SpellChecker = require('simple-spellchecker')
-// Module to control application life.
-const contextMenu = require('electron-context-menu')
-
+//const  electronDebug = require('electron-debug')
+//electronDebug({enabled: true, showDevTools: true});
 // Module to create native browser window.
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-// spellchecker enabled
-let myDictionary = null
 
-const spellDict = path.join(__dirname, 'node_modules/simple-spellchecker/dict')
+
+
+
 const APP_ICON = path.join(__dirname, 'app/resources', 'icon')
 
 const iconPath = () => {
@@ -33,9 +31,6 @@ const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   }
 })
 
-// init context menu
-contextMenu({})
-
 if (shouldQuit) {
   app.quit()
 }
@@ -49,10 +44,12 @@ function createWindow() {
     icon: iconPath(),
     webPreferences: {
       preload: path.join(__dirname, 'app/js/preload.js'),
-      nodeIntegration: true,
-      plugins: true
+      plugins: true,
+      webSecurity: true
     }
   })
+  // set Menu
+  require('./app/menu.js')
 
   // and load the index.html of the app.
   win.loadURL(`https://www.flowdock.com/app`)
@@ -60,21 +57,6 @@ function createWindow() {
 
   // Open the DevTools.
   // page.openDevTools()
-
-  // Add spellcheck dictionary
-  SpellChecker.getDictionary('en-GB', spellDict, (err, result) => {
-    if (!err) {
-      myDictionary = result
-    }
-  })
-
-// Define function for consult the dictionary.
-  ipcMain.on('checkspell', (event, word) => {
-//    console.log('on checkspell', event, word)
-    if (myDictionary !== null && word !== null) {
-      event.returnValue = myDictionary.spellCheck(word)
-    }
-  })
 
   // Emitted when the window is closed.
   win.on('closed', () => {

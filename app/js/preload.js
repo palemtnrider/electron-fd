@@ -1,3 +1,4 @@
+
 // sound fix
 onload = () => {
   const timeout = time => {
@@ -19,8 +20,7 @@ onload = () => {
 
     return promise
   }
-
-
+  let play;
   let currentPlay = 0
   const fixPlay = (win) => {
     if (win.Howl === undefined) {
@@ -33,11 +33,11 @@ onload = () => {
     let orig = win.Howl.prototype.play
     let stateChangePromise = win.Howler.ctx.suspend()
 
-    win.Howl.prototype.play = function () {
+    play = win.Howl.prototype.play = function () {
       let self = this
       let args = arguments
       currentPlay++
-      let ctx = win.Howler.ctx;
+      let ctx = win.Howler.ctx
 
       return stateChangePromise.then(() => {
         if (ctx.state === 'suspended') {
@@ -65,27 +65,49 @@ onload = () => {
         }
       })
     }
+
+    checkSound()
   }
 
   // wait the page to finish initialize
 
+  const checkSound = () => {
+    if (window.Howl && window.Howl.prototype.play !== play) {
+      fixPlay(window)
+    }
+    timeout(5000)().then(() => {
+      checkSound()
+    })
+  }
+
   timeout(2000)()
-  .then(() => {
-    fixPlay(window)
-  })
+    .then(() => {
+      fixPlay(window)
+    })
 }
 
-// Spell checker
-const {webFrame, ipcRenderer, remote} = require('electron')
-const {nativeImage, app} = remote
+onload()
 
-webFrame.setSpellCheckProvider('en-GB', false, {
-  spellCheck: function (text) {
-    console.log(text)
-    const res = ipcRenderer.sendSync('checkspell', text)
-    return res !== null ? res : true
-  }
+// // Spell checker
+ const {remote} = require('electron')
+ const {nativeImage, app} = remote
+
+const {SpellCheckHandler, ContextMenuListener, ContextMenuBuilder} = require('electron-spellchecker')
+
+window.spellCheckHandler = new SpellCheckHandler()
+setTimeout(() => window.spellCheckHandler.attachToInput(), 1000)
+
+window.spellCheckHandler.currentSpellcheckerChanged.subscribe(() => {
+  console.log(`Current language is ${window.spellCheckHandler.currentSpellcheckerLanguage}`)
 })
+
+window.spellCheckHandler.provideHintText('This is probably the language that you want to check in')
+window.spellCheckHandler.autoUnloadDictionariesOnBlur()
+
+let contextMenuBuilder = new ContextMenuBuilder(window.spellCheckHandler)
+let contextMenuListener = new ContextMenuListener((info) => {
+  contextMenuBuilder.showPopupMenu(info)
+});
 
 // unread Badges
 function updateDockBadge(title) {
