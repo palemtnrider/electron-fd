@@ -1,7 +1,8 @@
 //
 // Copied from electron quick start
 //
-const {app, BrowserWindow, shell, Menu} = require('electron')
+const electron = require('electron')
+const {app, BrowserWindow, shell, Menu} = electron
 const path = require('path')
 //const  electronDebug = require('electron-debug')
 //electronDebug({enabled: true, showDevTools: true});
@@ -77,6 +78,11 @@ function createWindow() {
     if (disposition === 'new-window') {
       shell.openExternal(url)
     }
+  })
+
+  electron.powerMonitor.on('resume', () => {
+    console.log('resume/reload')
+    win.reload()
   })
 
   return win
