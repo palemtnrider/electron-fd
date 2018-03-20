@@ -1,6 +1,5 @@
-const {Menu} = require('electron')
+const {Menu, app} = require('electron')
 const electron = require('electron')
-const app = electron.app
 
 const template = [
   {
