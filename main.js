@@ -80,11 +80,6 @@ function createWindow() {
     }
   })
 
-  electron.powerMonitor.on('resume', () => {
-    console.log('resume/reload')
-    setTimeout(() => win.reload(), 2*1000)
-  })
-
   return win
 }
 app.setName('flowdock-app')

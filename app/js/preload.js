@@ -163,3 +163,20 @@ function setBadge(unreadCount) {
     }
   }
 }
+
+// online/offline detection
+let isOnline = null
+const alertOnlineStatus = () => {
+  const currentStatus = navigator.onLine;
+  console.log('alertOnline', currentStatus, isOnline)
+  if (isOnline == false && currentStatus == true) {
+    // reload
+    window.location.reload();
+  }
+  isOnline = currentStatus
+}
+
+window.addEventListener('online',  alertOnlineStatus)
+window.addEventListener('offline',  alertOnlineStatus)
+
+alertOnlineStatus()
