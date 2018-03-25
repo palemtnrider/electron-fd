@@ -1,0 +1,14 @@
+{
+  "extends": "standard",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
+    "standard/computed-property-even-spacing": 0,
+    "max-len": [2, 100],
+    "no-console": 0
+  }
+}
